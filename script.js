@@ -1498,56 +1498,24 @@ document.getElementById('downloadFile').addEventListener('click', function() {
     document.body.removeChild(a);
 });
 
-// Function to download the Flexible Pavement Condition Data Sheet and PCI sheet as Excel
-function downloadExcelSheets() {
-    // Prepare the data for the Flexible Pavement Condition Data Sheet
-    const conditionData = [];
-    const rows = document.querySelectorAll('#dynamicTable tbody tr');
-    rows.forEach(row => {
-        const rowData = {
-            "Distress Type": row.querySelector('select').value,
-            "Severity": row.querySelectorAll('select')[1].value,
-            "Total": row.querySelector('.total').textContent,
-            "Density %": row.querySelector('.density').textContent,
-            "Deduct Value": row.querySelector('.deductValue').textContent,
-        };
-        conditionData.push(rowData);
-    });
+// Convert and download the file as Excel
+document.getElementById('downloadExcel').addEventListener('click', function() {
+    event.preventDefault(); // Prevents the form from refreshing the page
+    if (!uploadedFileName) {
+        alert('Please upload a file first.');
+        return;
+    }
 
-    // Prepare the data for the PCI sheet
-    const pciData = [];
-    const pciRows = document.querySelectorAll('#dynamicTablePCI tbody tr');
-    pciRows.forEach(row => {
-        const rowData = {
-            "Max_CDV": row.cells[0].textContent,
-            "PCI": row.cells[1].textContent,
-            "Rating (ASTM / FAA)": row.cells[2].textContent,
-            "Rating (Scale 2)": row.cells[3].textContent,
-        };
-        pciData.push(rowData);
-    });
+    // Convert JSON data to a worksheet
+    const worksheet = XLSX.utils.json_to_sheet(fileData);
 
     // Create a new workbook
     const workbook = XLSX.utils.book_new();
-
-    // Add the Flexible Pavement Condition Data Sheet
-    const conditionSheet = XLSX.utils.json_to_sheet(conditionData);
-    XLSX.utils.book_append_sheet(workbook, conditionSheet, 'Condition Data');
-
-    // Add the PCI sheet
-    const pciSheet = XLSX.utils.json_to_sheet(pciData);
-    XLSX.utils.book_append_sheet(workbook, pciSheet, 'PCI Data');
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
     // Create downloadable Excel file
-    XLSX.writeFile(workbook, 'Flexible_Pavement_Condition_Data.xlsx');
-}
-
-// Add event listener to the download button
-document.getElementById('downloadExcel').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevents the form from refreshing the page
-    downloadExcelSheets();
+    XLSX.writeFile(workbook, `${uploadedFileName}.xlsx`);
 });
-
 
 // Function to get unique values for a selected column
 function getUniqueValues(column) {
