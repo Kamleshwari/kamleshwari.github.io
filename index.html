@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCI System with Dynamic Table</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="MainHeader">Pavement Condition Index (PCI) - Flexible Pavement (Asphalt concrete)</h2>
+
+    <form id="pciForm">
+        <!-- Section 1: Create/Upload Database -->
+        <h3>A. Create/Upload Database (*.json)</h3>
+        <!-- Create New File Section -->
+        <div id="createFileSection">
+            <label for="newFileName">Enter File Name to Create (without extension):</label>
+            <input type="text" id="newFileName" placeholder="Enter new file name">
+            <button id="createFile">Create and Download New File</button>
+
+            <label for="uploadFile">Upload Existing File:</label>
+            <input type="file" id="uploadFile" accept=".json">
+
+            <!-- Clear File from Memory Button -->
+            <button id="clearFile">Clear File from Memory</button>
+
+            <button id="viewFile">View File Content</button>
+            <div id="fileContent">
+                <!-- Table content will be generated here -->
+            </div>
+
+            <!-- Input for row number and button -->
+            <label for="rowNumber">Enter Row Number:</label>
+            <input type="number" id="rowNumber" min="1" placeholder="Row number">
+            <button id="extractRowData">Extract Row Data</button>
+
+
+            <div class="filter-container">
+                <label for="filterColumn">Column Header:</label>
+                <select id="filterColumn">
+                    <!-- Dynamic column headers will be inserted here -->
+                </select>
+            
+                <label for="filterValue">Unique Values:</label>
+                <select id="filterValue">
+                    <!-- Dynamic unique values based on selected column -->
+                </select>
+            
+                
+                <button id="applyFilter">Filter</button>
+            </div>
+
+            <div class="delete-section">
+                <label for="networkDropdown">Network:</label>
+                <select id="networkDropdown"></select>
+            
+                <label for="branchDropdown">Branch:</label>
+                <select id="branchDropdown"></select>
+            
+                <label for="sectionDropdown">Section:</label>
+                <select id="sectionDropdown"></select>
+            
+                <label for="unitDropdown">Unit:</label>
+                <select id="unitDropdown"></select>
+            
+                <button id="deleteButton">Delete</button>
+            </div>
+            
+
+
+
+            <div class="dropdownContainer">
+                <!-- Dropdown 1: Contains headers -->
+                <label for="headerDropdown">Select Column:</label>
+                <select id="headerDropdown">
+                    <option value="network">Network</option>
+                    <option value="branch">Branch</option>
+                    <option value="section">Section</option>
+                </select>
+
+                <!-- Dropdown 2: Will be dynamically populated with unique values -->
+                <label for="valueDropdown">Select Value:</label>
+                <select id="valueDropdown">
+                    <option value="">Select a value</option>
+                </select>
+
+                <!-- Display the calculated PCI -->
+                <label id="pciLabel" for="calculatedPCI">Calculated PCI: </label>
+                <span id="calculatedPCI">N/A</span>
+                <span id="calculatedPCI_rating1">N/A</span>
+                <span id="calculatedPCI_rating2">N/A</span>
+                
+            </div>
+
+            <div class="unique-container">
+                <button id="viewElementalPCI">View Elemental PCI</button>
+        
+                <!-- Table for Networks -->
+                <h3>Network PCI</h3>
+                <table id="networkTable" class="pci-table">
+                    <colgroup>
+                        <col style="width: 35%;">
+                        <col style="width: 15%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Network</th>
+                            <th>PCI</th>
+                            <th>Rating (Scale 1)</th>
+                            <th>Rating (Scale 2)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Network PCI rows will be populated here -->
+                    </tbody>
+                </table>
+        
+                <!-- Table for Branches -->
+                <h3>Branch PCI</h3>
+                <table id="branchTable" class="pci-table">
+                    <colgroup>
+                        <col style="width: 35%;">
+                        <col style="width: 15%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Branch</th>
+                            <th>PCI</th>
+                            <th>Rating (Scale 1)</th>
+                            <th>Rating (Scale 2)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Branch PCI rows will be populated here -->
+                    </tbody>
+                </table>
+        
+                <!-- Table for Sections -->
+            
+                <h3>Section PCI</h3>
+                
+                <table id="sectionTable" class="pci-table">
+                    <colgroup>
+                        <col style="width: 35%;">
+                        <col style="width: 15%;">
+                        <col style="width: 25%;">
+                        <col style="width: 25%;">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Section</th>
+                            <th>PCI</th>
+                            <th>Rating (Scale 1)</th>
+                            <th>Rating (Scale 2)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Section PCI rows will be populated here -->
+                    </tbody>
+                    
+                </table>
+            </div>
+
+
+            
+        </div>
+
+        
+        <!-- Section 2: User Input (Network, Branch, Survey Information, etc.) -->
+        <h3>B. Survey Information</h3>
+        <table id="surveyInfoTable">
+            <tr>
+                <th>Description</th>
+                <th>Name</th>
+                <th>Area (sq.m)</th>
+            </tr>
+            <tr>
+                <td>Network</td>
+                <td><input type="text" id="networkName" placeholder="Enter network name"></td>
+                <td><input type="text" id="networkArea" placeholder="Enter area"></td>
+            </tr>
+            <tr>
+                <td>Branch</td>
+                <td><input type="text" id="branchName" placeholder="Enter branch name"></td>
+                <td><input type="text" id="branchArea" placeholder="Enter area"></td>
+            </tr>
+            <tr>
+                <td>Section</td>
+                <td><input type="text" id="sectionName" placeholder="Enter section name"></td>
+                <td><input type="text" id="sectionArea" placeholder="Enter area"></td>
+            </tr>
+            <tr>
+                <td>Unit</td>
+                <td><input type="text" id="unitName" placeholder="Enter unit name"></td>
+                <td><input type="text" id="unitArea" placeholder="Enter area"></td>
+            </tr>
+        </table>
+
+        <div class="survey-meta">
+            <label for="surveyedBy">Surveyed by:</label>
+            <input type="text" id="surveyedBy" placeholder="Enter surveyor name">
+            
+            <label for="surveyDate">Survey Date:</label>
+            <input type="date" id="surveyDate">
+        </div>
+
+        <!-- Section 3: Excel-Type Sheet Starts Here -->
+        <h3>C. Distress Types</h3>
+
+        <table id="distressTable"></table>
+        
+        <!-- Section 4: Excel-Type Sheet Starts Here -->
+        <h3>D. Flexible Pavement Condition Data Sheet</h3>
+
+        <table id="dynamicTable">
+            <thead>
+                <tr>
+                    <th rowspan="2">Distress Type</th>
+                    <th rowspan="2">Severity</th>
+                    <th colspan="10">Quantity (sq.m)</th>
+                    <th rowspan="2">Total</th>
+                    <th rowspan="2">Density %</th>
+                    <th rowspan="2">Deduct Value</th>
+                </tr>
+                <tr>
+                    <th>Q1</th>
+                    <th>Q2</th>
+                    <th>Q3</th>
+                    <th>Q4</th>
+                    <th>Q5</th>
+                    <th>Q6</th>
+                    <th>Q7</th>
+                    <th>Q8</th>
+                    <th>Q9</th>
+                    <th>Q10</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Dynamic rows will be inserted here -->
+            </tbody>
+        </table>
+
+        <!-- Buttons to add/remove rows -->
+        <button type="button" onclick="addRow()">Add Row</button>
+        <button type="button" onclick="removeRow()">Remove Row</button>
+        <button type="button" onclick="calculateTotal()">Calculate Total</button>
+        <button type="button" onclick="calculate_DV()">Calculate DV</button>
+        <button type="button" onclick="Calculate_Maximum_CDV()">Calculate PCI</button>
+
+        <button id="addToDatabase">Add to Database</button>
+
+        <!-- Download Updated File -->
+        <button id="downloadFile">Download Updated File (*.json)</button>
+    
+        <!-- Download as Excel -->
+        <button id="downloadExcel">Download as Excel</button>
+
+        <!-- Section 5: Maximum allowable number of distress table starts here -->
+        <h3>E. Maximum allowable number of distresses (m)</h3>
+
+        <table id="dynamicTablem">
+            <thead>
+                <tr>
+                    <th rowspan="1">Highest Deduct Value (HDV)</th>
+                    <th rowspan="1">m = 1 + (9/95)*(100 - HDV) &le; 10</th>
+                </tr>
+                
+            </thead>
+            <tbody>
+                <!-- Dynamic rows will be inserted here -->
+            </tbody>
+        </table>
+
+        <!-- Section 6: CDV table starts here -->
+        <h3>F. Determine maximum Corrected Deduct Value (Max CDV)</h3>
+
+        <table id="dynamicTableCDV">
+            <thead>
+                <tr>
+                    <th rowspan="1">#</th>
+                    <th colspan="10">Deduct Values</th>
+                    <th rowspan="1">Total</th>
+                    <th rowspan="1">q</th>
+                    <th rowspan="1">CDV</th>
+                </tr>
+                
+            </thead>
+            <tbody>
+                <!-- Dynamic rows will be inserted here -->
+            </tbody>
+        </table>
+
+        <!-- Section 7: PCI table starts here -->
+        <h3>G. Calculate Pavement Condition Index (PCI)</h3>
+
+        <table id="dynamicTablePCI">
+            <thead>
+                <tr>
+                    <th rowspan="1">Max_CDV</th>
+                    <th colspan="1">PCI = 100 - Max_CDV</th>
+                    <th rowspan="1">Rating (ASTM / FAA)</th>
+                    <th rowspan="1">Rating (Scale 2)</th>
+                </tr>
+                
+            </thead>
+            <tbody>
+                <!-- Dynamic rows will be inserted here -->
+            </tbody>
+        </table>
+
+         <!-- Section 8: PCI table starts here -->
+         <h3>H. Pavement Condition Index (PCI) Rating Scales</h3>
+        <div class="pci-container">
+            <!-- ASTM Column -->
+            <div class="pci-column" id="astm-column">
+                <h3>ASTM D5340/FAA PCI Ratings</h3>
+            </div>
+        
+            <!-- FAA Column -->
+            <div class="pci-column" id="faa-column">
+                <h3>Scale 2 Ratings</h3>
+            </div>
+        </div>
+
+         <!-- Section 9: Chart/plot for distress curves starts here -->
+         <h3>I. Distress Data Plotting</h3>
+         <div class="main-chart-container">
+            
+            <!-- Dropdown to select the sheet -->
+            <label for="sheetSelect">Select Distress type:</label>
+            <select id="sheetSelect" onchange="plotData()"></select>
+    
+            <!-- Graph Container -->
+            <div class="chart-container">
+                <canvas id="distressChart"></canvas>
+            </div>
+    
+            <!-- Table will be displayed here -->
+            <div class="table-container">
+                <table id="distressTabledata"></table>
+            </div>
+        </div>
+        
+
+    </form>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

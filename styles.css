@@ -1,0 +1,257 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* New style for the MainHeader */
+.MainHeader {
+    background-color: teal; /* Set the background color to teal */
+    color: white; /* Optional: change the text color to white for better contrast */
+    padding: 10px; /* Optional: add some padding for visual appeal */
+    text-align: center; /* Optional: center the text */
+}
+
+.container {
+    margin: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #000;
+    text-align: center;
+}
+
+th, td {
+    padding: 10px;
+}
+
+thead th {
+    background-color: #f2f2f2;
+}
+
+button {
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+input[type="text"], input[type="date"], input[type="time"], select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.survey-meta {
+    margin-top: 20px;
+}
+
+.survey-meta label {
+    display: inline-block;
+    width: 200px;
+    margin-right: 10px;
+}
+
+.survey-meta input {
+    margin-bottom: 10px;
+}
+
+
+.pci-container {
+    display: flex;
+    justify-content: space-between;
+    /*width: 80%;*/
+    align-items: flex-start; /* Ensures both columns stretch to the same height */
+    
+}
+
+.pci-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 40%;
+    height: 400px;
+    position: relative;
+}
+
+.rating-block {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0px; /* Remove bottom margin to eliminate space */
+    position: relative;
+    border: 0px solid indigo;  /* Thin black border */
+}
+
+.color-box {
+    width: 80%;  /* Make the color box wider */
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    color: white;
+    font-weight: bold;
+    padding: 5px;
+    border: 0px solid black;  /* Thin black border */
+    margin-bottom: 0; /* Remove bottom margin to eliminate space */
+}
+
+.label-inside {
+    text-align: center;
+    font-size: 16px;
+    color: black; /* Keep label inside the colored area white */
+}
+
+.range-label {
+    position: absolute;
+    right: 10%;  /* Move label to the left side adjacent to the box */
+    font-size: 16px;
+    color: black;  /* Set label text to black */
+    bottom: 0;  /* Align number labels to the bottom of each box */
+    /*top: -20px; /* Adjust as necessary to position it above the box */
+}
+
+table.distress-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px; /* Smaller font size */
+    border: 1px solid black; /* Outer border */
+}
+
+td.distress-cell {
+    border: none; /* No interior border */
+    padding: 4px; /* Smaller padding */
+    text-align: left; /* Left align the text */
+    vertical-align: top; /* Align text to the top */
+}
+
+.column-distress {
+    width: 16.67%; /* Each column takes up one-sixth of the table width */
+}
+
+
+.main-chart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.chart-container {
+    width: 70%;
+    margin-bottom: 20px;
+}
+
+.table-container {
+    width: 80%;
+    overflow-x: auto;
+}
+
+#fileContent {
+    overflow: auto;
+    width: 100%; /* Set the width to 100% of the container */
+    max-height: 300px; /* Limit the height, make the content scrollable if exceeded */
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+/* Table styling */
+#fileContent table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Table header styling */
+#fileContent th, #fileContent td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#fileContent th {
+    background-color: #f2f2f2;
+}
+
+/* Align elements in a single line */
+label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+#headerDropdown, #valueDropdown, span, 
+#filterColumn, #filterValue, 
+#networkDropdown, #branchDropdown, #sectionDropdown, #unitDropdown {
+    padding: 8px;
+    margin-right: 15px;
+    width: auto; /* Adjust width so that elements fit in one line */
+    display: inline-block;
+    vertical-align: middle; /* Align elements vertically in the center */
+}
+
+#calculatedPCI {
+    color: blue; /* Make PCI value blue */
+    font-weight: bold;
+}
+
+.dropdowncontainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+
+.unique-container {
+    margin: 20px;
+}
+
+.pci-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.pci-table th, .pci-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.pci-table th {
+    background-color: #f2f2f2;
+}
+
+.pci-table td {
+    text-align: center;
+}
+
+.pci-table td.rating1, .pci-table td.rating2 {
+    color: black;
+}
+
+/* Column width control using colgroup */
+.pci-table colgroup col:nth-child(1) {
+    width: 35%;
+}
+
+.pci-table colgroup col:nth-child(2) {
+    width: 15%;
+}
+
+.pci-table colgroup col:nth-child(3),
+.pci-table colgroup col:nth-child(4) {
+    width: 25%;
+}
+
+.filter-container, 
+.delete-section,
+.dropdownContainer,
+.unique-container{
+    border: 1px solid black; /* Define the border thickness, style, and color */
+    padding: 10px; /* Optional padding inside the border */
+}
+
+
+
